@@ -29,8 +29,21 @@ def gui_layout():
                     }),
                 # URL section
                 html.Div([
-                    dcc.Input(id='url', type='text', value=''),
-                ]),
+                    dcc.Dropdown(
+                        id="url_history",
+                        options=[],
+                        searchable=False,
+                        placeholder='Select URL',
+                        style={
+                            'display': 'table',
+                            'width': '60%',
+                            'height': '25%',
+                            'margin': 'auto',
+                            'backgroundColor': '#FFFFFF'}),
+                    dcc.Input(
+                        id="url",
+                        placeholder="Type your URL here",
+                        )]),
                 html.Div([
                     html.Button(
                         id='url-button',
@@ -87,6 +100,8 @@ def gui_layout():
                 html.Div([html.Div(id='open-files-output-message')],
                          style={'display': 'none'}),
                 html.Div([html.Div(id='custom-shortcut-output-message')],
+                         style={'display': 'none'}),
+                html.Div([html.Div(id='native-shortcut-output-message')],
                          style={'display': 'none'}),
                 html.Div([html.Div(id='shortcut-output-message')],
                          style={'display': 'none'}),
