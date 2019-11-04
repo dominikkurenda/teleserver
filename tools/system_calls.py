@@ -5,9 +5,11 @@ from io import BytesIO
 import pyscreenshot as ImageGrab
 from subprocess import call
 import webbrowser
-
 from tools.common import UPLOAD_DIRECTORY
 
+
+urls = []
+urls.extend([None]*10)
 
 URL_SCHEMES = ('file://',
                'ftp://',
@@ -139,3 +141,35 @@ def get_screen():
     buffered_screen = BytesIO()
     screen.save(buffered_screen, format='JPEG')
     return base64.b64encode(buffered_screen.getvalue()).decode('utf-8')
+
+
+def url_history(url):
+    """Stores 10 last casted url
+
+    :param url: URL to save
+    :type url: str
+
+    :return: List of urls
+    :rtype: list
+    """
+    if url is '' or None or []:
+        pass
+    else:
+        if urls[0] is None:
+            urls[0] = url
+        else:
+            for x in range(9, -1, -1):
+                urls[x] = urls[x-1]
+            urls[0] = url
+
+    return urls
+
+
+def get_url_history(url):
+    """Get list of casted urls
+
+    :return: List of urls
+    :rtype: list
+    """
+    urls = url_history(url)
+    return [{'label': url_h, 'value': url_h} for url_h in urls]
