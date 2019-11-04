@@ -13,6 +13,7 @@ import tools.app_callbacks as callback
 from tools.common import OPENMEET_var
 from tools.secret_manager import SecretManager
 import tools.system_calls as system
+from dash.exceptions import PreventUpdate
 
 sec = SecretManager()
 VALID_USERNAME_PASSWORD_PAIRS = [sec.get_credentials()]
@@ -37,7 +38,7 @@ def openmeet():
 
 @server.route('/open', methods=['GET'])
 def open():
-    url = flask.request.args.get('url')
+    url = flask.request.args.get('url_history')
     system.web_open(url)
     return "url opened.\n"
 
@@ -74,11 +75,28 @@ def mute():
 
 @app.callback(
     Output('open-output-message', 'children'),
-    [Input('url-button', 'n_clicks')], [State('url', 'value')])
-def app_open(n_clicks, value):
+    [Input('url-button', 'n_clicks')], [State('url', 'value'),  State('url_history', 'value')])
+def app_open(n_clicks, value, value_h):
     if n_clicks != 0:
-        system.web_open(value)
+        if value_h is None:
+            system.web_open(value)
+        else:
+            system.web_open(value_h)
     return u'opened'
+
+
+@app.callback(
+    Output('url_history', 'options'),
+    [Input('url-button', 'n_clicks')], [State('url', 'value'), State('url_history', 'value')])
+def app_history(n_clicks, value, value2):
+
+    if n_clicks == 0:
+        raise PreventUpdate
+    else:
+        if value is '':
+            return system.get_url_history(value2)
+        else:
+            return system.get_url_history(value)
 
 
 @app.callback(
