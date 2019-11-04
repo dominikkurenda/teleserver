@@ -188,10 +188,13 @@ def url_history(url):
 
 
 def get_url_history(url):
-    """Get list of casted urls
-
-    :return: List of urls
-    :rtype: list
+    """Get dictionary of casted urls
+    
+    :param url: URL to pass to url_history()
+    :type url: str
+    
+    :return: Dictionary of urls
+    :rtype: dict
     """
     urls = url_history(url)
     return [{'label': url_h, 'value': url_h} for url_h in urls]    
