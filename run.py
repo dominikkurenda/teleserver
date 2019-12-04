@@ -178,16 +178,21 @@ def GUI_app_open(n_clicks, value, value_h):
 
 @app.callback(
     Output('url_history', 'options'),
-    [Input('url-button', 'n_clicks')], [State('url', 'value'), State('url_history', 'value')])
-def app_history(n_clicks, value, value2):
-
+    [Input('url-button', 'n_clicks'), Input('url_history_number', 'n_clicks2')],
+    [State('url', 'value'), State('url_history', 'value'), State('url_history_number', 'value')])
+def app_history(n_clicks, n_clicks2, value, value2, number):
+    if n_clicks2 == 0:
+        pass
+    else:
+        system.get_url_history(number)
     if n_clicks == 0:
         raise PreventUpdate
     else:
         if value is '':
-            return system.get_url_history(value2)
+            system.url_history(value2)
         else:
-            return system.get_url_history(value)
+            system.url_history(value)
+        return system.get_url_history(number)
 
 
 @app.callback(
@@ -369,4 +374,4 @@ def GUI_generate_service_principal(clicks):
 
 
 if __name__ == '__main__':
-    server.run(host='0.0.0.0', port=8080)
+    server.run(host='0.0.0.0', port=8080, debug=True)
