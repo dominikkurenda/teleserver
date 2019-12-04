@@ -6,8 +6,10 @@ import pyscreenshot as ImageGrab
 from subprocess import call
 import webbrowser
 from Xlib.error import DisplayNameError
+import os
 
 from tools.common import UPLOAD_DIRECTORY
+from tools.common import HISTORY_DIRECTORY
 
 try:
     from pynput.keyboard import Controller
@@ -15,9 +17,6 @@ try:
 except DisplayNameError:
     print("Couldn't find connected DISPLAY. Keyboard input is disabled.")
     x_display = False
-
-urls = []
-urls.extend([None]*10)
 
 URL_SCHEMES = ('file://',
                'ftp://',
@@ -166,35 +165,54 @@ def get_screen():
 
 
 def url_history(url):
-    """Stores 10 last casted url
+    """ Saves casted url in file
 
-    :param url: URL to save
-    :type url: str
+    """
+
+    now = datetime.now()
+    dt_string = now.strftime("%S_%M_%H_%d_%m_%Y")
+    f = open(os.path.join(HISTORY_DIRECTORY, dt_string), "w")
+    f.write(url)
+    f.close()
+
+
+def make_url_history(number):
+    """Makes list of stored urls
+
+    :param number: integer to pass to make_url_history()
+    :type number: int
 
     :return: List of urls
     :rtype: list
     """
-    if url is '' or None or []:
+
+    files = []
+    files = os.listdir(HISTORY_DIRECTORY)
+    sortedfiles = sorted(files, key=lambda x: (datetime.strptime(x, '%S_%M_%H_%d_%m_%Y')), reverse=True)
+    if number == 999999999999:
         pass
     else:
-        if urls[0] is None:
-            urls[0] = url
+        if len(sortedfiles) <= number:
+            pass
         else:
-            for x in range(9, -1, -1):
-                urls[x] = urls[x-1]
-            urls[0] = url
-
+            del sortedfiles[number:len(files)]
+    urls = []
+    for filename in sortedfiles:
+        path = os.path.join(HISTORY_DIRECTORY, filename)
+        if os.path.isfile(path):
+            f = open(os.path.join(HISTORY_DIRECTORY, filename), "r")
+            urls.append(f.read())
     return urls
 
 
-def get_url_history(url):
+def get_url_history(number):
     """Get dictionary of casted urls
-    
-    :param url: URL to pass to url_history()
-    :type url: str
-    
+
+    :param number: integer to pass to make_url_history()
+    :type number: int
+
     :return: Dictionary of urls
     :rtype: dict
     """
-    urls = url_history(url)
-    return [{'label': url_h, 'value': url_h} for url_h in urls]    
+    urls = make_url_history(number)
+    return [{'label': url_h, 'value': url_h} for url_h in urls]

@@ -1,5 +1,6 @@
 TELESERVER_DIR = '/var/lib/teleserver'
 UPLOAD_DIRECTORY = f'{TELESERVER_DIR}/data'
+HISTORY_DIRECTORY = f'{TELESERVER_DIR}/history'
 
 OPENMEET_var = "https://meet.google.com/"
 
