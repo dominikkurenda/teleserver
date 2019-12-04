@@ -30,6 +30,18 @@ def gui_layout():
                 # URL section
                 html.Div([
                     dcc.Dropdown(
+                        id="url_history_number",
+                        options=[{'label': 10, 'value': 10}, {'label': 20, 'value': 20}, {'label': 50, 'value': 50},
+                                 {'label': 100, 'value': 100}, {'label': 'All', 'value': 999999999999}],
+                        searchable=False,
+                        value=10,
+                        style={
+                            'display': 'table',
+                            'width': '60%',
+                            'height': '25%',
+                            'margin': 'auto',
+                            'backgroundColor': '#FFFFFF'}),
+                    dcc.Dropdown(
                         id="url_history",
                         options=[],
                         searchable=False,
